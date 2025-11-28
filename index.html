@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Kennel Club - Golden Retriever Pedigree Query</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --kennel-blue: #003366;
+            --kennel-gold: #D4AF37;
+            --kennel-light: #f8f9fa;
+            --kennel-dark: #1a1a1a;
+            --kennel-border: #dee2e6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--kennel-light);
+            color: var(--kennel-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--kennel-blue);
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 60px;
+            margin-right: 15px;
+        }
+
+        .logo-text h1 {
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .logo-text p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-outline {
+            border: 1px solid white;
+            color: white;
+            background: transparent;
+        }
+
+        .btn-outline:hover {
+            background: white;
+            color: var(--kennel-blue);
+        }
+
+        .btn-gold {
+            background: var(--kennel-gold);
+            color: var(--kennel-dark);
+            border: none;
+        }
+
+        .btn-gold:hover {
+            background: #c19b2c;
+        }
+
+        nav {
+            padding-top: 15px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 5px 0;
+            position: relative;
+        }
+
+        nav a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background: var(--kennel-gold);
+            transition: width 0.3s ease;
+        }
+
+        nav a:hover:after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0, 51, 102, 0.8), rgba(0, 51, 102, 0.9)), url('https://images.unsplash.com/photo-1552053831-71594a27632d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .hero h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .hero p {
+            font-size: 18px;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+
+        /* Search Section */
+        .search-section {
+            background: white;
+            padding: 40px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .search-container h3 {
+            font-size: 28px;
+            color: var(--kennel-blue);
+            margin-bottom: 10px;
+        }
+
+        .search-container p {
+            margin-bottom: 30px;
+            color: #666;
+        }
+
+        .search-box {
+            display: flex;
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 50px;
+            overflow: hidden;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-box button {
+            padding: 0 30px;
+            background: var(--kennel-blue);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .search-box button:hover {
+            background: #002244;
+        }
+
+        /* Results Section */
+        .results-section {
+            padding: 60px 0;
+        }
+
+        .results-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .results-header {
+            background: var(--kennel-blue);
+            color: white;
+            padding: 20px 30px;
+        }
+
+        .results-header h3 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .dog-info {
+            padding: 30px;
+        }
+
+        .dog-basic-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--kennel-border);
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: var(--kennel-blue);
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .info-value {
+            font-size: 16px;
+        }
+
+        .pedigree-chart {
+            margin-top: 40px;
+        }
+
+        .pedigree-title {
+            font-size: 20px;
+            color: var(--kennel-blue);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--kennel-border);
+        }
+
+        .pedigree-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .pedigree-table td {
+            border: 1px solid var(--kennel-border);
+            padding: 15px;
+            text-align: center;
+            vertical-align: top;
+            width: 25%;
+        }
+
+        .pedigree-table .bg-gold {
+            background-color: rgba(212, 175, 55, 0.1);
+        }
+
+        .pedigree-table .dog-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .pedigree-table .dog-id {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--kennel-dark);
+            color: white;
+            padding: 50px 0 20px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h4 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: var(--kennel-gold);
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+            font-size: 14px;
+            color: #999;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-top {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero h2 {
+                font-size: 28px;
+            }
+
+            .pedigree-table {
+                font-size: 14px;
+            }
+
+            .pedigree-table td {
+                padding: 10px 5px;
+            }
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .no-results i {
+            font-size: 50px;
+            margin-bottom: 20px;
+            color: #ccc;
+        }
+        /* Featured Dogs Showcase */
+        .featured-dogs {
+            padding: 40px 0 60px;
+        }
+
+        .dogs-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .dog-card {
+            border: 1px solid var(--kennel-border);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .dog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .dog-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .dog-card-info {
+            padding: 20px;
+        }
+
+        .dog-card-info h4 {
+            color: var(--kennel-blue);
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .dog-titles {
+            color: var(--kennel-gold);
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .dog-desc {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<header>
+    <div class="container">
+        <div class="header-top">
+            <div class="logo">
+                <div class="logo-text">
+                    <h1>The Kennel Club</h1>
+                    <p>Official Pedigree Registry for Golden Retrievers</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <a href="#" class="btn btn-outline">Member Login</a>
+                <a href="#" class="btn btn-gold">Breeder Resources</a>
+            </div>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Breeds</a></li>
+                <li><a href="#">Events</a></li>
+                <li><a href="#">Health</a></li>
+                <li><a href="#">Training</a></li>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <h2>Golden Retriever Pedigree Database</h2>
+        <p>Official pedigree records and lineage information for registered Golden Retrievers in the UK</p>
+    </div>
+</section>
+
+<!-- Search Section -->
+<section class="search-section">
+    <div class="container">
+        <div class="search-container">
+            <h3>Pedigree Lookup</h3>
+            <p>Enter the Microchip Number to search for a Golden Retriever's pedigree information</p>
+            <div class="search-box">
+                <input type="text" id="microchipInput" placeholder="Enter Microchip Number">
+                <button id="searchBtn"><i class="fas fa-search"></i> Search</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Results Section -->
+<section class="results-section">
+    <div class="container">
+        <div class="results-container">
+            <div class="results-header">
+                <h3>Pedigree Query Results</h3>
+            </div>
+
+            <div id="resultsContent">
+                <!-- Results will be displayed here -->
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Dogs Showcase -->
+<section class="featured-dogs">
+    <div class="container">
+        <div class="results-container">
+            <div class="results-header">
+                <h3>Featured Championship Golden Retrievers</h3>
+            </div>
+            <div class="dogs-showcase">
+                <div class="dog-card">
+                    <img src="https://ts2.tc.mm.bing.net/th/id/OIP-C.eU-6oRNyPuh53Ix8Hk_Y6QAAAA?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Ch. Oakridge's Forever Young">
+                    <div class="dog-card-info">
+                        <h4>Ch. Oakridge's Forever Young</h4>
+                        <p class="dog-titles">UK Champion, International Grand Champion</p>
+                        <p class="dog-desc">A stunning example of the British Golden Retriever with excellent conformation and temperament. Multiple group placements at Crufts.</p>
+                    </div>
+                </div>
+
+                <div class="dog-card">
+                    <img src="https://ts1.tc.mm.bing.net/th/id/R-C.1df71bbea5a27b4f30982f499f8bcf1f?rik=IeXjbC9TB41SCg&riu=http%3a%2f%2fpmo6654e0.pic1.ysjianzhan.cn%2fupload%2fDSC04932.jpeg&ehk=1XBeHw7x25%2bcUE4i%2bc4dFTUho0DZqxbRsSUrkHZc%2bek%3d&risl=&pid=ImgRaw&r=0" alt="Ch. Bramblewick Storm">
+                    <div class="dog-card-info">
+                        <h4>Ch. Bramblewick Storm</h4>
+                        <p class="dog-titles">Best in Show Winner, UK Champion</p>
+                        <p class="dog-desc">Known for exceptional movement and beautiful golden coat. Sired numerous champions across Europe and North America.</p>
+                    </div>
+                </div>
+
+                <div class="dog-card">
+                    <img src="https://ts1.tc.mm.bing.net/th/id/R-C.1050bf4b95958a4bc7194fea3fadb127?rik=jLfSxbrFV9thDg&riu=http%3a%2f%2fexp-picture.cdn.bcebos.com%2fe09173e89a618625b2f2395f3b04541bd00faaf9.jpg%3fx-bce-process%3dimage%252Fcrop%252Cx_0%252Cy_0%252Cw_450%252Ch_330%252Fformat%252Cf_auto%252Fquality%252Cq_80&ehk=B1JRorcl2ORkDQWaECvFEHL8CDmxgDRRiHmUcMUQGlk%3d&risl=&pid=ImgRaw&r=0" alt="Ch. Whitewater Masterpiece">
+                    <div class="dog-card-info">
+                        <h4>Ch. Whitewater Masterpiece</h4>
+                        <p class="dog-titles">International Champion, Dual Champion</p>
+                        <p class="dog-desc">Combines beauty with brains. Successful in both conformation and field trials. Produced multiple champion offspring.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>The Kennel Club</h4>
+                <p>The UK's largest organisation dedicated to the health and welfare of dogs.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#">Find a Breeder</a></li>
+                    <li><a href="#">Upcoming Events</a></li>
+                    <li><a href="#">Breed Standards</a></li>
+                    <li><a href="#">Health Testing</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Us</h4>
+                <ul>
+                    <li><i class="fas fa-phone"></i> 01244 394 398</li>
+                    <li><i class="fas fa-envelope"></i> info@thekennelclub.org.uk</li>
+                    <li><i class="fas fa-map-marker-alt"></i> Clarges Street, London, W1J 8AB</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2023 The Kennel Club. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchBtn = document.getElementById('searchBtn');
+        const microchipInput = document.getElementById('microchipInput');
+        const resultsContent = document.getElementById('resultsContent');
+
+        // 添加对 Member Login 和 Breeder Resources 按钮的处理
+        const memberLoginBtn = document.querySelector('a.btn-outline');
+        const breederResourcesBtn = document.querySelector('a.btn-gold');
+
+        function showAccessDeniedMessage() {
+            alert("Sorry, this function is currently unavailable as you are not a local UK user.");
+        }
+
+        memberLoginBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            showAccessDeniedMessage();
+        });
+
+        breederResourcesBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            showAccessDeniedMessage();
+        });
+
+        // Sample data for demonstration
+        const dogData = {
+            "900263000633852": {
+                name: "仔仔",
+                breed: "Golden Retriever",
+                regNumber: "24****17",
+                microchip: "900263000633852",
+                owner: "胡婷",
+                color: "Golden / Sandy Gold",
+                kennel: "Ryall Golden Retrievers",
+                birthdate: "18/02/2024",
+                sex: "Dog",
+                pedigree: {
+                    father: {
+                        name: "Sh. Ch. Sanmargro Come What May",
+                        id: "90013765****521",
+                        father: {
+                            name: "Sh. Ch. Sanmargro Come What Might",
+                            id: "90003169****043",
+                            father: { name: "Sh. Ch. Sanmargro Eternal Wind", id: "90001874****133" },
+                            mother: { name: "Smt. Graceful Sanmargro", id: "90001647****071" }
+                        },
+                        mother: {
+                            name: "Smt. Margro Come What May",
+                            id: "90003171****709",
+                            father: { name: "Sh. Margro Eternal Hope", id: "90001881****501" },
+                            mother: { name: "Smt. Maywise Strongwill", id: "90001900****846" }
+                        }
+                    },
+                    mother: {
+                        name: "Sh. Ch. Sussexgold Summer Breeze",
+                        id: "90014836****516",
+                        father: {
+                            name: "Sh. Ch. Ironwood Frostfall",
+                            id: "90014735****328",
+                            father: { name: "Sh. Ch. Ironstone Winter Gale", id: "90014631****447" },
+                            mother: { name: "Smt. Swiftwater Amber Sky", id: "90014634****662" }
+                        },
+                        mother: {
+                            name: "Smt. Ironwood Silver Moonlight",
+                            id: "90014732****915",
+                            father: { name: "Sh. Ch. Silverwood Mountain Peak", id: "90014630****883" },
+                            mother: { name: "Smt. Rivershade Pearl Dawn", id: "90014638****129" }
+                        }
+                    }
+                }
+            }
+        };
+
+        // Function to display results
+        function displayResults(microchip) {
+            if (dogData[microchip]) {
+                const dog = dogData[microchip];
+
+                resultsContent.innerHTML = `
+                        <div class="dog-info">
+                            <div class="dog-basic-info">
+                                <div class="info-item">
+                                    <span class="info-label">Registered Name</span>
+                                    <span class="info-value">${dog.name}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Breed</span>
+                                    <span class="info-value">${dog.breed}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Registration Number</span>
+                                    <span class="info-value">${dog.regNumber}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Microchip Number</span>
+                                    <span class="info-value">${dog.microchip}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Dog Owner</span>
+                                    <span class="info-value">${dog.owner}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Colour</span>
+                                    <span class="info-value">${dog.color}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Kennel Name</span>
+                                    <span class="info-value">${dog.kennel}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Date of Birth</span>
+                                    <span class="info-value">${dog.birthdate}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Sex</span>
+                                    <span class="info-value">${dog.sex}</span>
+                                </div>
+                            </div>
+
+                            <div class="pedigree-chart">
+                                <h3 class="pedigree-title">Three Generation Pedigree</h3>
+                                <table class="pedigree-table">
+                                    <tr>
+                                        <td rowspan="4" class="bg-gold">
+                                            <div class="dog-name">${dog.pedigree.father.name}</div>
+                                            <div class="dog-id">${dog.pedigree.father.id}</div>
+                                            <p>Father</p>
+                                        </td>
+                                        <td rowspan="2" class="bg-gold">
+                                            <div class="dog-name">${dog.pedigree.father.father.name}</div>
+                                            <div class="dog-id">${dog.pedigree.father.father.id}</div>
+                                            <p>Grandfather</p>
+                                        </td>
+                                        <td class="bg-gold">
+                                            <div class="dog-name">${dog.pedigree.father.father.father.name}</div>
+                                            <div class="dog-id">${dog.pedigree.father.father.father.id}</div>
+                                            <p>Great Grandfather</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="dog-name">${dog.pedigree.father.father.mother.name}</div>
+                                            <div class="dog-id">${dog.pedigree.father.father.mother.id}</div>
+                                            <p>Great Grandmother</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td rowspan="2">
+                                            <div class="dog-name">${dog.pedigree.father.mother.name}</div>
+                                            <div class="dog-id">${dog.pedigree.father.mother.id}</div>
+                                            <p>Grandmother</p>
+                                        </td>
+                                        <td class="bg-gold">
+                                            <div class="dog-name">${dog.pedigree.father.mother.father.name}</div>
+                                            <div class="dog-id">${dog.pedigree.father.mother.father.id}</div>
+                                            <p>Great Grandfather</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="dog-name">${dog.pedigree.father.mother.mother.name}</div>
+                                            <div class="dog-id">${dog.pedigree.father.mother.mother.id}</div>
+                                            <p>Great Grandmother</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td rowspan="4">
+                                            <div class="dog-name">${dog.pedigree.mother.name}</div>
+                                            <div class="dog-id">${dog.pedigree.mother.id}</div>
+                                            <p>Mother</p>
+                                        </td>
+                                        <td rowspan="2" class="bg-gold">
+                                            <div class="dog-name">${dog.pedigree.mother.father.name}</div>
+                                            <div class="dog-id">${dog.pedigree.mother.father.id}</div>
+                                            <p>Grandfather</p>
+                                        </td>
+                                        <td class="bg-gold">
+                                            <div class="dog-name">${dog.pedigree.mother.father.father.name}</div>
+                                            <div class="dog-id">${dog.pedigree.mother.father.father.id}</div>
+                                            <p>Great Grandfather</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="dog-name">${dog.pedigree.mother.father.mother.name}</div>
+                                            <div class="dog-id">${dog.pedigree.mother.father.mother.id}</div>
+                                            <p>Great Grandmother</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td rowspan="2">
+                                            <div class="dog-name">${dog.pedigree.mother.mother.name}</div>
+                                            <div class="dog-id">${dog.pedigree.mother.mother.id}</div>
+                                            <p>Grandmother</p>
+                                        </td>
+                                        <td class="bg-gold">
+                                            <div class="dog-name">${dog.pedigree.mother.mother.father.name}</div>
+                                            <div class="dog-id">${dog.pedigree.mother.mother.father.id}</div>
+                                            <p>Great Grandfather</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="dog-name">${dog.pedigree.mother.mother.mother.name}</div>
+                                            <div class="dog-id">${dog.pedigree.mother.mother.mother.id}</div>
+                                            <p>Great Grandmother</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    `;
+            } else {
+                resultsContent.innerHTML = `
+                        <div class="no-results">
+                            <i class="fas fa-search"></i>
+                            <h3>Query result for dog ID ${microchip} does not exist</h3>
+                            <p>Please check the microchip number and try again.</p>
+                        </div>
+                    `;
+            }
+        }
+
+        // Event listener for search button
+        searchBtn.addEventListener('click', function() {
+            const microchip = microchipInput.value.trim();
+            if (microchip) {
+                displayResults(microchip);
+            }
+        });
+
+        // Event listener for Enter key
+        microchipInput.addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                const microchip = microchipInput.value.trim();
+                if (microchip) {
+                    displayResults(microchip);
+                }
+            }
+        });
+
+        // 移除初始结果显示，使输入框默认为空
+        resultsContent.innerHTML = `
+            <div class="no-results">
+                <i class="fas fa-search"></i>
+                <h3>Enter a Microchip Number to Begin Your Search</h3>
+                <p>Please enter a valid microchip number in the search box above.</p>
+            </div>
+        `;
+    });
+</script>
+</body>
+</html>
