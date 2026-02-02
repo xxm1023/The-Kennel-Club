@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Kennel Club - Golden Retriever Pedigree Query</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <style>
         :root {
             --kennel-blue: #003366;
@@ -390,6 +391,7 @@
             margin-bottom: 20px;
             color: #ccc;
         }
+
         /* Featured Dogs Showcase */
         .featured-dogs {
             padding: 40px 0 60px;
@@ -505,7 +507,11 @@
             </div>
 
             <div id="resultsContent">
-                <!-- Results will be displayed here -->
+                <div class="no-results">
+                    <i class="fas fa-search"></i>
+                    <h3>Enter a Microchip Number to Begin Your Search</h3>
+                    <p>Please enter a valid microchip number in the search box above.</p>
+                </div>
             </div>
         </div>
     </div>
@@ -520,7 +526,7 @@
             </div>
             <div class="dogs-showcase">
                 <div class="dog-card">
-                    <img src="https://ts2.tc.mm.bing.net/th/id/OIP-C.eU-6oRNyPuh53Ix8Hk_Y6QAAAA?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Ch. Oakridge's Forever Young">
+                    <img src="static/image/4ee2993d-1aa4-4ca4-a53f-001101b9a236.png" alt="Ch. Oakridge's Forever Young">
                     <div class="dog-card-info">
                         <h4>Ch. Oakridge's Forever Young</h4>
                         <p class="dog-titles">UK Champion, International Grand Champion</p>
@@ -529,7 +535,7 @@
                 </div>
 
                 <div class="dog-card">
-                    <img src="https://ts1.tc.mm.bing.net/th/id/R-C.1df71bbea5a27b4f30982f499f8bcf1f?rik=IeXjbC9TB41SCg&riu=http%3a%2f%2fpmo6654e0.pic1.ysjianzhan.cn%2fupload%2fDSC04932.jpeg&ehk=1XBeHw7x25%2bcUE4i%2bc4dFTUho0DZqxbRsSUrkHZc%2bek%3d&risl=&pid=ImgRaw&r=0" alt="Ch. Bramblewick Storm">
+                    <img src="static/image/e2ce4027-641f-4a96-bcdf-954f43619eaa.png" alt="Ch. Bramblewick Storm">
                     <div class="dog-card-info">
                         <h4>Ch. Bramblewick Storm</h4>
                         <p class="dog-titles">Best in Show Winner, UK Champion</p>
@@ -538,7 +544,7 @@
                 </div>
 
                 <div class="dog-card">
-                    <img src="https://ts1.tc.mm.bing.net/th/id/R-C.1050bf4b95958a4bc7194fea3fadb127?rik=jLfSxbrFV9thDg&riu=http%3a%2f%2fexp-picture.cdn.bcebos.com%2fe09173e89a618625b2f2395f3b04541bd00faaf9.jpg%3fx-bce-process%3dimage%252Fcrop%252Cx_0%252Cy_0%252Cw_450%252Ch_330%252Fformat%252Cf_auto%252Fquality%252Cq_80&ehk=B1JRorcl2ORkDQWaECvFEHL8CDmxgDRRiHmUcMUQGlk%3d&risl=&pid=ImgRaw&r=0" alt="Ch. Whitewater Masterpiece">
+                    <img src="static/image/f196db0e-3467-447a-864b-5a6e74a84688.png" alt="Ch. Whitewater Masterpiece">
                     <div class="dog-card-info">
                         <h4>Ch. Whitewater Masterpiece</h4>
                         <p class="dog-titles">International Champion, Dual Champion</p>
@@ -581,256 +587,250 @@
         </div>
     </div>
 </footer>
+
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchBtn = document.getElementById('searchBtn');
-        const microchipInput = document.getElementById('microchipInput');
-        const resultsContent = document.getElementById('resultsContent');
+document.addEventListener('DOMContentLoaded', function() {
+    const searchBtn = document.getElementById('searchBtn');
+    const microchipInput = document.getElementById('microchipInput');
+    const resultsContent = document.getElementById('resultsContent');
 
-        // 添加对 Member Login 和 Breeder Resources 按钮的处理
-        const memberLoginBtn = document.querySelector('a.btn-outline');
-        const breederResourcesBtn = document.querySelector('a.btn-gold');
+    // Access denied handler
+    function showAccessDeniedMessage() {
+        alert("Sorry, this function is currently unavailable as you are not a local UK user.");
+    }
 
-        function showAccessDeniedMessage() {
-            alert("Sorry, this function is currently unavailable as you are not a local UK user.");
-        }
-
-        memberLoginBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            showAccessDeniedMessage();
-        });
-
-        breederResourcesBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            showAccessDeniedMessage();
-        });
-
-        // Sample data for demonstration
-        const dogData = {
-            "900263000633852": {
-                name: "仔仔",
-                breed: "Golden Retriever",
-                regNumber: "24****17",
-                microchip: "900263000633852",
-                owner: "胡婷",
-                color: "Golden / Sandy Gold",
-                kennel: "Ryall Golden Retrievers",
-                birthdate: "18/02/2024",
-                sex: "Dog",
-                pedigree: {
-                    father: {
-                        name: "Sh. Ch. Sanmargro Come What May",
-                        id: "90013765****521",
-                        father: {
-                            name: "Sh. Ch. Sanmargro Come What Might",
-                            id: "90003169****043",
-                            father: { name: "Sh. Ch. Sanmargro Eternal Wind", id: "90001874****133" },
-                            mother: { name: "Smt. Graceful Sanmargro", id: "90001647****071" }
-                        },
-                        mother: {
-                            name: "Smt. Margro Come What May",
-                            id: "90003171****709",
-                            father: { name: "Sh. Margro Eternal Hope", id: "90001881****501" },
-                            mother: { name: "Smt. Maywise Strongwill", id: "90001900****846" }
-                        }
-                    },
-                    mother: {
-                        name: "Sh. Ch. Sussexgold Summer Breeze",
-                        id: "90014836****516",
-                        father: {
-                            name: "Sh. Ch. Ironwood Frostfall",
-                            id: "90014735****328",
-                            father: { name: "Sh. Ch. Ironstone Winter Gale", id: "90014631****447" },
-                            mother: { name: "Smt. Swiftwater Amber Sky", id: "90014634****662" }
-                        },
-                        mother: {
-                            name: "Smt. Ironwood Silver Moonlight",
-                            id: "90014732****915",
-                            father: { name: "Sh. Ch. Silverwood Mountain Peak", id: "90014630****883" },
-                            mother: { name: "Smt. Rivershade Pearl Dawn", id: "90014638****129" }
-                        }
-                    }
-                }
-            }
-        };
-
-        // Function to display results
-        function displayResults(microchip) {
-            if (dogData[microchip]) {
-                const dog = dogData[microchip];
-
-                resultsContent.innerHTML = `
-                        <div class="dog-info">
-                            <div class="dog-basic-info">
-                                <div class="info-item">
-                                    <span class="info-label">Registered Name</span>
-                                    <span class="info-value">${dog.name}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Breed</span>
-                                    <span class="info-value">${dog.breed}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Registration Number</span>
-                                    <span class="info-value">${dog.regNumber}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Microchip Number</span>
-                                    <span class="info-value">${dog.microchip}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Dog Owner</span>
-                                    <span class="info-value">${dog.owner}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Colour</span>
-                                    <span class="info-value">${dog.color}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Kennel Name</span>
-                                    <span class="info-value">${dog.kennel}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Date of Birth</span>
-                                    <span class="info-value">${dog.birthdate}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Sex</span>
-                                    <span class="info-value">${dog.sex}</span>
-                                </div>
-                            </div>
-
-                            <div class="pedigree-chart">
-                                <h3 class="pedigree-title">Three Generation Pedigree</h3>
-                                <table class="pedigree-table">
-                                    <tr>
-                                        <td rowspan="4" class="bg-gold">
-                                            <div class="dog-name">${dog.pedigree.father.name}</div>
-                                            <div class="dog-id">${dog.pedigree.father.id}</div>
-                                            <p>Father</p>
-                                        </td>
-                                        <td rowspan="2" class="bg-gold">
-                                            <div class="dog-name">${dog.pedigree.father.father.name}</div>
-                                            <div class="dog-id">${dog.pedigree.father.father.id}</div>
-                                            <p>Grandfather</p>
-                                        </td>
-                                        <td class="bg-gold">
-                                            <div class="dog-name">${dog.pedigree.father.father.father.name}</div>
-                                            <div class="dog-id">${dog.pedigree.father.father.father.id}</div>
-                                            <p>Great Grandfather</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="dog-name">${dog.pedigree.father.father.mother.name}</div>
-                                            <div class="dog-id">${dog.pedigree.father.father.mother.id}</div>
-                                            <p>Great Grandmother</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td rowspan="2">
-                                            <div class="dog-name">${dog.pedigree.father.mother.name}</div>
-                                            <div class="dog-id">${dog.pedigree.father.mother.id}</div>
-                                            <p>Grandmother</p>
-                                        </td>
-                                        <td class="bg-gold">
-                                            <div class="dog-name">${dog.pedigree.father.mother.father.name}</div>
-                                            <div class="dog-id">${dog.pedigree.father.mother.father.id}</div>
-                                            <p>Great Grandfather</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="dog-name">${dog.pedigree.father.mother.mother.name}</div>
-                                            <div class="dog-id">${dog.pedigree.father.mother.mother.id}</div>
-                                            <p>Great Grandmother</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td rowspan="4">
-                                            <div class="dog-name">${dog.pedigree.mother.name}</div>
-                                            <div class="dog-id">${dog.pedigree.mother.id}</div>
-                                            <p>Mother</p>
-                                        </td>
-                                        <td rowspan="2" class="bg-gold">
-                                            <div class="dog-name">${dog.pedigree.mother.father.name}</div>
-                                            <div class="dog-id">${dog.pedigree.mother.father.id}</div>
-                                            <p>Grandfather</p>
-                                        </td>
-                                        <td class="bg-gold">
-                                            <div class="dog-name">${dog.pedigree.mother.father.father.name}</div>
-                                            <div class="dog-id">${dog.pedigree.mother.father.father.id}</div>
-                                            <p>Great Grandfather</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="dog-name">${dog.pedigree.mother.father.mother.name}</div>
-                                            <div class="dog-id">${dog.pedigree.mother.father.mother.id}</div>
-                                            <p>Great Grandmother</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td rowspan="2">
-                                            <div class="dog-name">${dog.pedigree.mother.mother.name}</div>
-                                            <div class="dog-id">${dog.pedigree.mother.mother.id}</div>
-                                            <p>Grandmother</p>
-                                        </td>
-                                        <td class="bg-gold">
-                                            <div class="dog-name">${dog.pedigree.mother.mother.father.name}</div>
-                                            <div class="dog-id">${dog.pedigree.mother.mother.father.id}</div>
-                                            <p>Great Grandfather</p>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="dog-name">${dog.pedigree.mother.mother.mother.name}</div>
-                                            <div class="dog-id">${dog.pedigree.mother.mother.mother.id}</div>
-                                            <p>Great Grandmother</p>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    `;
-            } else {
-                resultsContent.innerHTML = `
-                        <div class="no-results">
-                            <i class="fas fa-search"></i>
-                            <h3>Query result for dog ID ${microchip} does not exist</h3>
-                            <p>Please check the microchip number and try again.</p>
-                        </div>
-                    `;
-            }
-        }
-
-        // Event listener for search button
-        searchBtn.addEventListener('click', function() {
-            const microchip = microchipInput.value.trim();
-            if (microchip) {
-                displayResults(microchip);
-            }
-        });
-
-        // Event listener for Enter key
-        microchipInput.addEventListener('keyup', function(event) {
-            if (event.key === 'Enter') {
-                const microchip = microchipInput.value.trim();
-                if (microchip) {
-                    displayResults(microchip);
-                }
-            }
-        });
-
-        // 移除初始结果显示，使输入框默认为空
-        resultsContent.innerHTML = `
-            <div class="no-results">
-                <i class="fas fa-search"></i>
-                <h3>Enter a Microchip Number to Begin Your Search</h3>
-                <p>Please enter a valid microchip number in the search box above.</p>
-            </div>
-        `;
+    document.querySelector('a.btn-outline').addEventListener('click', e => {
+        e.preventDefault();
+        showAccessDeniedMessage();
     });
+    document.querySelector('a.btn-gold').addEventListener('click', e => {
+        e.preventDefault();
+        showAccessDeniedMessage();
+    });
+
+    const SECRET_KEY = 'GoldenRetrieverPedigreeSecret976'; 
+    const IV = '1976203901266242'; 
+
+    function decryptData(encrypted) {
+        try {
+            const decrypted = CryptoJS.AES.decrypt(
+                encrypted,
+                CryptoJS.enc.Utf8.parse(SECRET_KEY),
+                {
+                    iv: CryptoJS.enc.Utf8.parse(IV),
+                    mode: CryptoJS.mode.CBC,
+                    padding: CryptoJS.pad.Pkcs7
+                }
+            );
+            const utf8 = decrypted.toString(CryptoJS.enc.Utf8);
+            return JSON.parse(utf8);
+        } catch (e) {
+            return null;
+        }
+    }
+
+    let dogData = null;
+
+    async function loadDogData() {
+        try {
+            const response = await fetch('static/data/dogs.crypt.json');
+            if (!response.ok) throw new Error('Network response was not ok');
+            const encryptedData = await response.json();
+
+            dogData = {};
+            for (const [id, encrypted] of Object.entries(encryptedData)) {
+                const dog = decryptData(encrypted);
+                if (dog) dogData[id] = dog;
+            }
+
+        } catch (error) {
+            console.error('Failed to load or decrypt dog data:', error);
+            resultsContent.innerHTML = `
+                <div class="no-results">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Database Unavailable</h3>
+                    <p>Please try again later or contact support.</p>
+                </div>
+            `;
+        }
+    }
+
+    function displayResults(microchip) {
+        if (!dogData) {
+            resultsContent.innerHTML = `
+                <div class="no-results">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <h3>Loading database...</h3>
+                    <p>Please wait a moment.</p>
+                </div>
+            `;
+            setTimeout(() => {
+                if (dogData) displayResults(microchip);
+            }, 500);
+            return;
+        }
+
+        if (dogData[microchip]) {
+            const dog = dogData[microchip];
+            resultsContent.innerHTML = `
+                <div class="dog-info">
+                    <div class="dog-basic-info">
+                        <div class="info-item">
+                            <span class="info-label">Registered Name</span>
+                            <span class="info-value">${dog.name}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Breed</span>
+                            <span class="info-value">${dog.breed}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Registration Number</span>
+                            <span class="info-value">${dog.regNumber}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Microchip Number</span>
+                            <span class="info-value">${dog.microchip}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Dog Owner</span>
+                            <span class="info-value">${dog.owner}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Colour</span>
+                            <span class="info-value">${dog.color}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Kennel Name</span>
+                            <span class="info-value">${dog.kennel}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Date of Birth</span>
+                            <span class="info-value">${dog.birthdate}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Sex</span>
+                            <span class="info-value">${dog.sex}</span>
+                        </div>
+                    </div>
+
+                    <div class="pedigree-chart">
+                        <h3 class="pedigree-title">Three Generation Pedigree</h3>
+                        <table class="pedigree-table">
+                            <tr>
+                                <td rowspan="4" class="bg-gold">
+                                    <div class="dog-name">${dog.pedigree.father.name}</div>
+                                    <div class="dog-id">${dog.pedigree.father.id}</div>
+                                    <p>Father</p>
+                                </td>
+                                <td rowspan="2" class="bg-gold">
+                                    <div class="dog-name">${dog.pedigree.father.father.name}</div>
+                                    <div class="dog-id">${dog.pedigree.father.father.id}</div>
+                                    <p>Grandfather</p>
+                                </td>
+                                <td class="bg-gold">
+                                    <div class="dog-name">${dog.pedigree.father.father.father.name}</div>
+                                    <div class="dog-id">${dog.pedigree.father.father.father.id}</div>
+                                    <p>Great Grandfather</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="dog-name">${dog.pedigree.father.father.mother.name}</div>
+                                    <div class="dog-id">${dog.pedigree.father.father.mother.id}</div>
+                                    <p>Great Grandmother</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2">
+                                    <div class="dog-name">${dog.pedigree.father.mother.name}</div>
+                                    <div class="dog-id">${dog.pedigree.father.mother.id}</div>
+                                    <p>Grandmother</p>
+                                </td>
+                                <td class="bg-gold">
+                                    <div class="dog-name">${dog.pedigree.father.mother.father.name}</div>
+                                    <div class="dog-id">${dog.pedigree.father.mother.father.id}</div>
+                                    <p>Great Grandfather</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="dog-name">${dog.pedigree.father.mother.mother.name}</div>
+                                    <div class="dog-id">${dog.pedigree.father.mother.mother.id}</div>
+                                    <p>Great Grandmother</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td rowspan="4">
+                                    <div class="dog-name">${dog.pedigree.mother.name}</div>
+                                    <div class="dog-id">${dog.pedigree.mother.id}</div>
+                                    <p>Mother</p>
+                                </td>
+                                <td rowspan="2" class="bg-gold">
+                                    <div class="dog-name">${dog.pedigree.mother.father.name}</div>
+                                    <div class="dog-id">${dog.pedigree.mother.father.id}</div>
+                                    <p>Grandfather</p>
+                                </td>
+                                <td class="bg-gold">
+                                    <div class="dog-name">${dog.pedigree.mother.father.father.name}</div>
+                                    <div class="dog-id">${dog.pedigree.mother.father.father.id}</div>
+                                    <p>Great Grandfather</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="dog-name">${dog.pedigree.mother.father.mother.name}</div>
+                                    <div class="dog-id">${dog.pedigree.mother.father.mother.id}</div>
+                                    <p>Great Grandmother</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td rowspan="2">
+                                    <div class="dog-name">${dog.pedigree.mother.mother.name}</div>
+                                    <div class="dog-id">${dog.pedigree.mother.mother.id}</div>
+                                    <p>Grandmother</p>
+                                </td>
+                                <td class="bg-gold">
+                                    <div class="dog-name">${dog.pedigree.mother.mother.father.name}</div>
+                                    <div class="dog-id">${dog.pedigree.mother.mother.father.id}</div>
+                                    <p>Great Grandfather</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="dog-name">${dog.pedigree.mother.mother.mother.name}</div>
+                                    <div class="dog-id">${dog.pedigree.mother.mother.mother.id}</div>
+                                    <p>Great Grandmother</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            `;
+        } else {
+            resultsContent.innerHTML = `
+                <div class="no-results">
+                    <i class="fas fa-search"></i>
+                    <h3>Query result for dog ID ${microchip} does not exist</h3>
+                    <p>Please check the microchip number and try again.</p>
+                </div>
+            `;
+        }
+    }
+
+    // Event listeners
+    searchBtn.addEventListener('click', () => {
+        const microchip = microchipInput.value.trim();
+        if (microchip) displayResults(microchip);
+    });
+
+    microchipInput.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') {
+            const microchip = microchipInput.value.trim();
+            if (microchip) displayResults(microchip);
+        }
+    });
+    loadDogData();
+});
 </script>
 </body>
 </html>
